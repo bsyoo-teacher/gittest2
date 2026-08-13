@@ -14,3 +14,8 @@ const validation = function () {
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
 };
+
+let count = localStorage.getItem("visit");
+count = Number(count) + 1;
+if (count != null) {
+}
