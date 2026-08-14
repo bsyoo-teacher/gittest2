@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>happang</title>
+    <style>
+      .mypage {
+        background-color: #eee;
+      }
+      #main {
+        font-family: Georgia, sans-serif;
+        font-size: 48px;
+        font-weight: bold;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        border-bottom: 1px solid #eee;
+      }
+      .mypage-nav {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+      }
+
+      .mypage-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 30px;
+      }
+
+      .mypage-nav a {
+        text-decoration: none;
+        font-family: Georgia, sans-serif;
+        font-weight: bold;
+        color: rgb(204, 204, 204);
+        font-size: 20px;
+        cursor: pointer;
+      }
+      .mypage-nav a:hover {
+        color: black;
+      }
+
+      #home {
+        font-family: Georgia, sans-serif;
+        font-size: 36px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mypage">
+      <header>
+        <h1 id="main">HAPPANG's PAGE</h1>
+        <nav class="mypage-nav">
+          <ul>
+            <li><a href="#home-section">홈</a></li>
+            <li><a href="#intro-section">소개</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div id="home-section">
+        <h2 id="home">HOME</h2>
+        <h3>환영합니다~ 제 페이지를 소개할게요~</h3>
+        <h4>만드는 이유</h4>
+        <p>
+          교수님이 만들라고 하셨는데 뭘 만들어야될지 모르겠어요 <br />
+          기능따위 모르겠고 저는 그냥 홈만 만들래요. <br />
+          열심히 내용을 적고 있어요. <br />
+          그래서 그냥 페이지 내에서 이동하는거만 해볼거에요 <br />
+          근데 지금 정말 집에 가고싶어요 <br />
+          그치만 집에 가려면... 몇시간이나 남았지 뭐에요? <br />
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
