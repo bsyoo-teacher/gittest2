@@ -10,11 +10,40 @@
         padding: 0;
         box-sizing: border-box;
       }
+      body {
+        font-family: "", Georgia, serif;
+        color: #333;
+        line-height: 1.6;
+      }
+      .header {
+        display: grid;
+        grid-template-rows: auto auto;
+        justify-items: center;
+        gap: 20px;
+        padding: 40px 20px 20px;
+      }
+      .logo h1 {
+        font-size: 2.2rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+      .main-img {
+        display: grid;
+        grid-template-rows: auto auto;
+        justify-items: center;
+        gap: 20px;
+      }
+      .hero-section {
+        display: grid;
+        grid-template-rows: auto auto;
+        justify-items: center;
+        gap: 20px;
+      }
     </style>
   </head>
   <body>
-    <header>
-      <div>
+    <header class="header">
+      <div class="logo">
         <h1>천산갑입니다</h1>
       </div>
       <div>
