@@ -6,186 +6,113 @@
     <title>김수형 페이지</title>
     <style>
       body {
-        font-family: sans-serif;
         text-align: center;
-        background: #faf8ef;
-        color: #776e65;
-        margin: 0;
-        padding-top: 40px;
+        background: #f7f7f7;
+        font-family: sans-serif;
+        margin-top: 50px;
       }
-      h1 {
-        font-size: 60px;
-        margin: 0;
-      }
-      #board {
-        width: 400px;
-        height: 400px;
-        background: #bbada0;
-        border-radius: 6px;
-        margin: 20px auto;
-        padding: 10px;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-gap: 10px;
-        box-sizing: border-box;
-      }
-      .tile {
-        width: 82.5px;
-        height: 82.5px;
-        background: #cdc1b4;
-        border-radius: 3px;
-        font-size: 30px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      /* 숫자별 타일 색상 */
-      .t2 {
-        background: #eee4da;
-      }
-      .t4 {
-        background: #ede0c8;
-      }
-      .t8 {
-        background: #f2b179;
-        color: #f9f6f2;
-      }
-      .t16 {
-        background: #f59563;
-        color: #f9f6f2;
-      }
-      .t32 {
-        background: #f67c5f;
-        color: #f9f6f2;
-      }
-      .t64 {
-        background: #f65e3b;
-        color: #f9f6f2;
-      }
-      .t128 {
-        background: #edcf72;
-        color: #f9f6f2;
-        font-size: 25px;
-      }
-      .t256 {
-        background: #edcc61;
-        color: #f9f6f2;
-        font-size: 25px;
-      }
-      .t512 {
-        background: #edc850;
-        color: #f9f6f2;
-        font-size: 25px;
-      }
-      .t1024 {
-        background: #edc53f;
-        color: #f9f6f2;
-        font-size: 20px;
-      }
-      .t2048 {
-        background: #edc22e;
-        color: #f9f6f2;
-        font-size: 20px;
+      canvas {
+        background: #fff;
+        border-bottom: 2px solid #535353;
       }
     </style>
   </head>
   <body>
-    <h1>2048</h1>
-    <p>방향키(←, →, ↑, ↓)를 눌러 블록을 합치세요!</p>
-    <div id="board"></div>
+    <h2>Dino Runner (Space to Jump)</h2>
+    <canvas id="gameCanvas" width="600" height="200"></canvas>
 
     <script>
-      let board = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ];
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
 
-      function init() {
-        addNewTile();
-        addNewTile();
-        render();
-      }
-
-      function addNewTile() {
-        let empty = [];
-        for (let r = 0; r < 4; r++) {
-          for (let c = 0; c < 4; c++) {
-            if (board[r][c] === 0) empty.push({ r, c });
-          }
-        }
-        if (empty.length > 0) {
-          let spot = empty[Math.floor(Math.random() * empty.length)];
-          board[spot.r][spot.c] = Math.random() < 0.9 ? 2 : 4;
-        }
-      }
-
-      function render() {
-        const container = document.getElementById("board");
-        container.innerHTML = "";
-        for (let r = 0; r < 4; r++) {
-          for (let c = 0; c < 4; c++) {
-            let val = board[r][c];
-            let tile = document.createElement("div");
-            tile.className = `tile ${val ? "t" + val : ""}`;
-            tile.textContent = val === 0 ? "" : val;
-            container.appendChild(tile);
-          }
-        }
-      }
-
-      function slide(row) {
-        let arr = row.filter((val) => val);
-        for (let i = 0; i < arr.length - 1; i++) {
-          if (arr[i] === arr[i + 1]) {
-            arr[i] *= 2;
-            arr[i + 1] = 0;
-          }
-        }
-        arr = arr.filter((val) => val);
-        while (arr.length < 4) arr.push(0);
-        return arr;
-      }
-
-      function rotateLeft(matrix) {
-        return matrix[0].map((val, index) =>
-          matrix.map((row) => row[3 - index]),
-        );
-      }
-
-      function rotateRight(matrix) {
-        return matrix[0]
-          .map((val, index) => matrix.map((row) => row[index]))
-          .reverse();
-      }
+      let dino = {
+        x: 50,
+        y: 120,
+        width: 30,
+        height: 40,
+        vy: 0,
+        gravity: 0.6,
+        jump: -10,
+        grounded: true,
+      };
+      let obstacle = { x: 600, y: 130, width: 20, height: 30, speed: 5 };
+      let score = 0;
+      let isGameOver = false;
 
       document.addEventListener("keydown", (e) => {
-        let changed = false;
-        let oldBoard = JSON.stringify(board);
-
-        if (e.key === "ArrowLeft") {
-          board = board.map((row) => slide(row));
-        } else if (e.key === "ArrowRight") {
-          board = board.map((row) => slide(row.reverse()).reverse());
-        } else if (e.key === "ArrowUp") {
-          board = rotateLeft(board);
-          board = board.map((row) => slide(row));
-          board = rotateRight(board);
-        } else if (e.key === "ArrowDown") {
-          board = rotateRight(board);
-          board = board.map((row) => slide(row));
-          board = rotateLeft(board);
-        }
-
-        if (JSON.stringify(board) !== oldBoard) {
-          addNewTile();
-          render();
+        if (e.code === "Space") {
+          if (dino.grounded) {
+            dino.vy = dino.jump;
+            dino.grounded = false;
+          }
+          if (isGameOver) {
+            isGameOver = false;
+            obstacle.x = 600;
+            score = 0;
+            loop();
+          }
         }
       });
 
-      init();
+      function update() {
+        if (isGameOver) return;
+
+        dino.vy += dino.gravity;
+        dino.y += dino.vy;
+
+        if (dino.y > 120) {
+          dino.y = 120;
+          dino.vy = 0;
+          dino.grounded = true;
+        }
+
+        obstacle.x -= obstacle.speed;
+        if (obstacle.x < -20) {
+          obstacle.x = 600;
+          score++;
+          obstacle.speed += 0.2; // 점점 빠르게
+        }
+
+        // 충돌 감지
+        if (
+          dino.x < obstacle.x + obstacle.width &&
+          dino.x + dino.width > obstacle.x &&
+          dino.y < obstacle.y + obstacle.height &&
+          dino.y + dino.height > obstacle.y
+        ) {
+          isGameOver = true;
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 공룡
+        ctx.fillStyle = "#535353";
+        ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+
+        // 장애물
+        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+        // 점수
+        ctx.font = "16px sans-serif";
+        ctx.fillText("Score: " + score, 500, 30);
+
+        if (isGameOver) {
+          ctx.font = "24px sans-serif";
+          ctx.fillText("Game Over! Press Space to Restart", 130, 100);
+        }
+      }
+
+      function loop() {
+        update();
+        draw();
+        if (!isGameOver) {
+          requestAnimationFrame(loop);
+        }
+      }
+
+      loop();
     </script>
   </body>
 </html>
