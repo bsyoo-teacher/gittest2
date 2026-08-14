@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>김수형 페이지</title>
+    <style>
+      body {
+        text-align: center;
+        background: #f7f7f7;
+        font-family: sans-serif;
+        margin-top: 50px;
+      }
+      canvas {
+        background: #fff;
+        border-bottom: 2px solid #535353;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Dino Runner (Space to Jump)</h2>
+    <canvas id="gameCanvas" width="600" height="200"></canvas>
+
+    <script>
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+
+      let dino = {
+        x: 50,
+        y: 120,
+        width: 30,
+        height: 40,
+        vy: 0,
+        gravity: 0.6,
+        jump: -10,
+        grounded: true,
+      };
+      let obstacle = { x: 600, y: 130, width: 20, height: 30, speed: 5 };
+      let score = 0;
+      let isGameOver = false;
+
+      document.addEventListener("keydown", (e) => {
+        if (e.code === "Space") {
+          if (dino.grounded) {
+            dino.vy = dino.jump;
+            dino.grounded = false;
+          }
+          if (isGameOver) {
+            isGameOver = false;
+            obstacle.x = 600;
+            score = 0;
+            loop();
+          }
+        }
+      });
+
+      function update() {
+        if (isGameOver) return;
+
+        dino.vy += dino.gravity;
+        dino.y += dino.vy;
+
+        if (dino.y > 120) {
+          dino.y = 120;
+          dino.vy = 0;
+          dino.grounded = true;
+        }
+
+        obstacle.x -= obstacle.speed;
+        if (obstacle.x < -20) {
+          obstacle.x = 600;
+          score++;
+          obstacle.speed += 0.2; // 점점 빠르게
+        }
+
+        // 충돌 감지
+        if (
+          dino.x < obstacle.x + obstacle.width &&
+          dino.x + dino.width > obstacle.x &&
+          dino.y < obstacle.y + obstacle.height &&
+          dino.y + dino.height > obstacle.y
+        ) {
+          isGameOver = true;
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 공룡
+        ctx.fillStyle = "#535353";
+        ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+
+        // 장애물
+        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+        // 점수
+        ctx.font = "16px sans-serif";
+        ctx.fillText("Score: " + score, 500, 30);
+
+        if (isGameOver) {
+          ctx.font = "24px sans-serif";
+          ctx.fillText("Game Over! Press Space to Restart", 130, 100);
+        }
+      }
+
+      function loop() {
+        update();
+        draw();
+        if (!isGameOver) {
+          requestAnimationFrame(loop);
+        }
+      }
+
+      loop();
+    </script>
+  </body>
+</html>
